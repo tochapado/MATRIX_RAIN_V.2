@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Matrix has you..</title>
+    <link rel="icon" type="image/x-icon" href="./favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Noto Sans JP', sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #111;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas"></div>
+    <script>
+      const charsModels = ['人', 'お', '社', '会', 'の', 'す', 'べ', 'て', 'と', '平', 'で', 'る', 'こ', 'き', 'な', 'い', 'す', 'は', 'ゐ', ];
+      const canvas = document.querySelector('#canvas');
+      const height = window.innerHeight;
+      const width = window.innerWidth;
+      canvas.style.height = height;
+      canvas.style.width = width;
+
+      const maxFontSize = 1; //1rem
+
+      const columnsNumber = width / (maxFontSize * 16);
+      const columnsHeight = height;
+      const columnsWidth = width / columnsNumber;
+
+      const rowsNumber = height / (maxFontSize * 16);
+      const rowsHeight = height / rowsNumber;
+      const rowsWidth = columnsWidth;
+
+      console.log(rowsWidth, rowsHeight)
+
+      for(let i = 0; i < columnsNumber; i++) {
+        const column = document.createElement('div');
+        column.style.display = 'inline-block';
+        column.style.height = columnsHeight;
+        column.style.width = columnsWidth;
+
+        for(let j = 0; j < rowsNumber; j++) {
+          const row = document.createElement('div');
+          row.style.color = 'hsla(120, 100%, 50%, 1)';
+          row.style.height = rowsHeight;
+          row.style.width = rowsWidth;
+
+          row.innerText = charsModels[Math.floor(Math.random() * (charsModels.length - 1))];
+
+          column.appendChild(row);
+        };
+
+        canvas.appendChild(column);
+      };
+    </script>
+  </body>
+</html>
