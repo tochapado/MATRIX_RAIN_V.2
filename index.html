@@ -4,63 +4,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Matrix has you..</title>
     <link rel="icon" type="image/x-icon" href="./favicon.ico"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
     <style>
       * {
         box-sizing: border-box;
-        font-family: 'Noto Sans JP', sans-serif;
         margin: 0;
-        padding: 0;
-      }
       body {
         background-color: #111;
-        overflow: hidden;
+	font-family: sans-serif;
+	font-weight: 700;
+	overflow: hidden;
+      } 
+      canvas {
+        background-color: #000;
       }
     </style>
   </head>
   <body>
-    <div id="canvas"></div>
+    <canvas></canvas> 
     <script>
-      const charsModels = ['人', 'お', '社', '会', 'の', 'す', 'べ', 'て', 'と', '平', 'で', 'る', 'こ', 'き', 'な', 'い', 'す', 'は', 'ゐ', ];
-      const canvas = document.querySelector('#canvas');
-      const height = window.innerHeight;
-      const width = window.innerWidth;
-      canvas.style.height = height;
-      canvas.style.width = width;
-
-      const maxFontSize = 1; //1rem
-
-      const columnsNumber = width / (maxFontSize * 16);
-      const columnsHeight = height;
-      const columnsWidth = width / columnsNumber;
-
-      const rowsNumber = height / (maxFontSize * 16);
-      const rowsHeight = height / rowsNumber;
-      const rowsWidth = columnsWidth;
-
-      console.log(rowsWidth, rowsHeight)
-
-      for(let i = 0; i < columnsNumber; i++) {
-        const column = document.createElement('div');
-        column.style.display = 'inline-block';
-        column.style.height = columnsHeight;
-        column.style.width = columnsWidth;
-
-        for(let j = 0; j < rowsNumber; j++) {
-          const row = document.createElement('div');
-          row.style.color = 'hsla(120, 100%, 50%, 1)';
-          row.style.height = rowsHeight;
-          row.style.width = rowsWidth;
-
-          row.innerText = charsModels[Math.floor(Math.random() * (charsModels.length - 1))];
-
-          column.appendChild(row);
-        };
-
-        canvas.appendChild(column);
+      const charsModels = ['r', 'o', 'l', 'a', 'R', 'O', 'L', 'A',];
+      const canvas = document.querySelector('canvas');
+      const ctx = canvas.getContext('2d');
+      let rolas = [];
+      
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      window.addEventListener('resize', function(e) {
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+      })
+      class Rola {
+        constructor(context) {
+	  this.canvas = context;
+	  this.x = Math.floor(Math.random() * this.canvas.canvas.width);
+	  this.y = 0;
+	  this.maxCharSize = 32;
+	  this.minCharSize = 4;
+	  this.character = charsModels[Math.floor(Math.random() * charsModels.length)];
+	  this.fontColor = '#0f0';
+	  this.fontSize = Math.random() * this.maxCharSize + this.minCharSize; 
+	  this.fontStyle = 'monospace';
+	  this.eject = false;
+	};
+	draw() {
+	  this.canvas.font = this.fontSize + 'px ' + this.fontStyle;	
+	  this.canvas.fillStyle = this.fontColor;
+	  this.canvas.fillText(this.character, this.x, this.y);
+	};
+	update() {
+	  this.y = this.y + this.fontSize;
+	  if(this.y > this.canvas.canvas.height) {
+	    this.eject = true;
+	    return; 
+	  };
+	  this.character = charsModels[Math.floor(Math.random() * charsModels.length)];
+	};
       };
-    </script>
+
+      function update() {
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.01)';
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	
+	while(rolas.length < 69) {
+	  rolas.push(new Rola(ctx));
+	};
+
+	let newRolas = [];
+	for(let i = 0; i < rolas.length; i++) {
+	  rolas[i].draw();
+	  rolas[i].update();
+	  if(!rolas[i].eject) newRolas.push(rolas[i]);
+	};
+	rolas = newRolas;
+
+	requestAnimationFrame(update);
+      };
+      update();
+   </script>
   </body>
 </html>
